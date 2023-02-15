@@ -17,7 +17,7 @@ export class DepartmentService {
   }
 
   async findOne(id: number) {
-    return await Department.findOne(+id, { relations: ['employees'] });
+    return await Department.findOne(+id);
   }
 
   async update(id: number, updateDepartmentDto: UpdateDepartmentDto) {

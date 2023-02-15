@@ -18,7 +18,7 @@ export class EmployeesService {
     return await Employee.find();
   }
   async findOne(id: number) {
-    return await Employee.findOne(+id,{ relations: ['department'] });
+    return await Employee.findOne(+id);
   }
 
 

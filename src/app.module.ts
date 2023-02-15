@@ -17,9 +17,13 @@ import { RoleGuard } from './Users/role/role.guard';
 import { DepartmentModule } from './department/department.module';
 import { Department } from './department/entities/department.entity';
 import { ConfigModule } from '@nestjs/config';
+import { HolidaysModule } from './holidays/holidays.module';
+import { Holiday } from './holidays/entities/holiday.entity';
+import { LeaveModule } from './leave/leave.module';
+import { Leave } from './leave/entities/leave.entity';
 
 
-const entities=[User,Otp,Employee,Department];
+const entities=[User,Otp,Employee,Department,Leave,Holiday];
 @Module({
   imports: [ ConfigModule.forRoot(),MailerModule.forRoot({
     transport:{
@@ -37,8 +41,8 @@ const entities=[User,Otp,Employee,Department];
     password: 'password',
     database: 'nestjs_mysql_crud_app',
     entities: entities,
-    synchronize: true,
-  }), UserModule, AuthModule, OtpModule, EmployeesModule, DepartmentModule],
+    synchronize: false,
+  }), UserModule, AuthModule, OtpModule, EmployeesModule, DepartmentModule, HolidaysModule, LeaveModule],
   controllers: [AppController],
   providers: [AppService,RoleGuard]
 
