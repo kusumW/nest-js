@@ -16,16 +16,17 @@ import { Employee } from './employees/entities/employee.entity';
 import { RoleGuard } from './Users/role/role.guard';
 import { DepartmentModule } from './department/department.module';
 import { Department } from './department/entities/department.entity';
+import { ConfigModule } from '@nestjs/config';
 
 
 const entities=[User,Otp,Employee,Department];
 @Module({
-  imports: [MailerModule.forRoot({
+  imports: [ ConfigModule.forRoot(),MailerModule.forRoot({
     transport:{
-      host:'smtp.sendgrid.net',
+      host:process.env.Host,
       auth:{
-        user:'apikey',
-        pass:'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'
+        user:process.env.USER,
+        pass:process.env.PASS
       }
     }
   }),TypeOrmModule.forRoot({
