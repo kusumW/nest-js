@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 import Holidays from '../enum/holiday.enum';
 
-@Entity('Holiday')
+@Entity('holiday')
 export class Holiday extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;

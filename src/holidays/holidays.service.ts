@@ -28,4 +28,5 @@ export class HolidaysService {
     await Holiday.delete({ id });
     return { deleted: true };
   }
+
 }

@@ -4,6 +4,6 @@ import { LeaveController } from './leave.controller';
 
 @Module({
   controllers: [LeaveController],
-  providers: [LeaveService]
+  providers: [LeaveService],
 })
 export class LeaveModule {}

@@ -21,11 +21,19 @@ import { HolidaysModule } from './holidays/holidays.module';
 import { Holiday } from './holidays/entities/holiday.entity';
 import { LeaveModule } from './leave/leave.module';
 import { Leave } from './leave/entities/leave.entity';
+import { ProfileModule } from './profile/profile.module';
+import { MulterModule } from '@nestjs/platform-express/multer';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 
 const entities=[User,Otp,Employee,Department,Leave,Holiday];
 @Module({
-  imports: [ ConfigModule.forRoot(),MailerModule.forRoot({
+  imports: [ MulterModule.register({
+    dest: '../uploads',
+  }), ServeStaticModule.forRoot({
+    rootPath: join(__dirname, '..', 'files')
+  }),ConfigModule.forRoot(),MailerModule.forRoot({
     transport:{
       host:process.env.Host,
       auth:{
@@ -41,8 +49,8 @@ const entities=[User,Otp,Employee,Department,Leave,Holiday];
     password: 'password',
     database: 'nestjs_mysql_crud_app',
     entities: entities,
-    synchronize: false,
-  }), UserModule, AuthModule, OtpModule, EmployeesModule, DepartmentModule, HolidaysModule, LeaveModule],
+    synchronize: true,
+  }), UserModule, AuthModule, OtpModule, EmployeesModule, DepartmentModule, HolidaysModule, LeaveModule, ProfileModule],
   controllers: [AppController],
   providers: [AppService,RoleGuard]
 

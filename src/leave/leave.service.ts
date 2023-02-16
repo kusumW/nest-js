@@ -1,26 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLeaveDto } from './dto/create-leave.dto';
 import { UpdateLeaveDto } from './dto/update-leave.dto';
+import { Leave } from './entities/leave.entity';
 
 @Injectable()
 export class LeaveService {
-  create(createLeaveDto: CreateLeaveDto) {
-    return 'This action adds a new leave';
+  async create(createLeaveDto: CreateLeaveDto) {
+    const user = Leave.create(createLeaveDto);
+    await user.save();
+    return user;
   }
 
-  findAll() {
-    return `This action returns all leave`;
+  async findAll() {
+    return await Leave.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} leave`;
+  async findOne(id: number) {
+    return await Leave.findOne(+id);
   }
 
-  update(id: number, updateLeaveDto: UpdateLeaveDto) {
-    return `This action updates a #${id} leave`;
+  async update(id: number, updateLeaveDto: UpdateLeaveDto) {
+    await Leave.update({ id }, updateLeaveDto);
+    return await Leave.findOne({ id });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} leave`;
+  async remove(id: number) {
+    await Leave.delete({ id });
+    return { deleted: true };
   }
 }

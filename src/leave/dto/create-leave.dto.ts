@@ -1,21 +1,24 @@
 import { IsNotEmpty } from 'class-validator';
-import Leaves from '../enum/leave.enum';
 
 export class CreateLeaveDto {
+  @IsNotEmpty()
   subject: string;
 
   @IsNotEmpty()
   name: string;
 
+  @IsNotEmpty()
   description: string;
 
+  @IsNotEmpty()
   startDate: Date;
 
+  @IsNotEmpty()
   endDate: Date;
 
-  leavereason: Date;
+  @IsNotEmpty()
+  leavereason: string;
 
-  assignedworkstatus: Date;
-
-  status: Leaves;
+  @IsNotEmpty()
+  assignedworkstatus: string;
 }

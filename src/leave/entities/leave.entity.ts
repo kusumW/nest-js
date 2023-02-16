@@ -10,7 +10,6 @@ import {
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
-import Leaves from '../enum/leave.enum';
 
 @Entity('leave')
 export class Leave extends BaseEntity {
@@ -32,16 +31,23 @@ export class Leave extends BaseEntity {
   @Column()
   endDate: Date;
 
-  @Column({ name: 'leave_reason' })
-  leavereason: Date;
+  @Column({ name: 'leave reason' })
+  leavereason: string;
 
-  @Column({ name: 'assigned_work_status' })
-  assignedworkstatus: Date;
+  @Column({ name: 'assigned work status' })
+  assignedworkstatus: string;
 
-  @Column({ default: Leaves.Enabled })
-  status: Leaves;
+  @Column({ name: 'HR status' })
+  status: string;
+
+  @Column({ name: 'action taken on' })
+  actiontakenon: string;
 
   @Column()
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column()
+  @CreateDateColumn()
+  updateddAt: Date;
 }
