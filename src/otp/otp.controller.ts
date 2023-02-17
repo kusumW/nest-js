@@ -87,6 +87,7 @@ export class OtpController {
       id: User.id,
       role: User.role,
       age: User.age,
+      profileImage:User.profileImage
     });
     return {
       message: 'success',

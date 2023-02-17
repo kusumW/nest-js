@@ -15,6 +15,7 @@ import { Roles } from 'src/Users/roles/roles.decorator';
 import Role from 'src/Users/enum/role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from 'src/Users/role/role.guard';
+import { Holiday } from './entities/holiday.entity';
 
 @Controller('holidays')
 export class HolidaysController {
@@ -30,8 +31,10 @@ export class HolidaysController {
   @Roles(Role.Admin)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Get()
-  findAll() {
-    return this.holidaysService.findAll();
+  async findAll() :Promise<Holiday[]>{
+    const user= await this.holidaysService.findAll();
+    console.log(user.map(h => `${h.title} (${h.date.toLocaleString('en-US', { timeZone: 'UTC', year: 'numeric', month: '2-digit', day: '2-digit' })})`));
+    return user;
   }
 
   @Roles(Role.Admin)
@@ -53,5 +56,9 @@ export class HolidaysController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.holidaysService.remove(+id);
+  }
+  @Get('upcoming')
+  async getUpcomingHolidays() {
+    return this.holidaysService.getUpcomingHolidays();
   }
 }

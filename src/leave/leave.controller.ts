@@ -7,7 +7,9 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { LeaveService } from './leave.service';
 import { CreateLeaveDto } from './dto/create-leave.dto';
 import { UpdateLeaveDto } from './dto/update-leave.dto';
@@ -23,22 +25,37 @@ export class LeaveController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.User)
   @Post()
-  create(@Body() createLeaveDto: CreateLeaveDto) {
-    return this.leaveService.create(createLeaveDto);
+  create(@Body() createLeaveDto: CreateLeaveDto, @Res() res: Response) {
+    const user = this.leaveService.create(createLeaveDto);
+    if (user) {
+      return res.send({ user });
+    } else {
+      res.status(404).send({ msg: 'not able to create' });
+    }
   }
 
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.Admin)
   @Get()
-  findAll() {
-    return this.leaveService.findAll();
+  findAll(@Res() res: Response) {
+    const user = this.leaveService.findAll();
+    if (user) {
+      return res.send({ user });
+    } else {
+      res.status(404).send({ msg: 'not able to fetch' });
+    }
   }
 
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.Admin)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.leaveService.findOne(+id);
+  findOne(@Param('id') id: string, @Res() res: Response) {
+    const user = this.leaveService.findOne(+id);
+    if ((user) => user.id == id) {
+      return res.send({ user });
+    } else {
+      res.status(404).send({ msg: 'not found' });
+    }
   }
 
   @UseGuards(AuthGuard('jwt'), RoleGuard)
@@ -53,7 +70,12 @@ export class LeaveController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.Admin)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.leaveService.remove(+id);
+  remove(@Param('id') id: string, @Res() res: Response) {
+    const user = this.leaveService.remove(+id);
+    if ((user) => user.id == id) {
+      return res.send({ user });
+    } else {
+      res.status(404).send({ msg: 'not found' });
+    }
   }
 }

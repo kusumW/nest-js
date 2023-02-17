@@ -6,9 +6,8 @@ import { Leave } from './entities/leave.entity';
 @Injectable()
 export class LeaveService {
   async create(createLeaveDto: CreateLeaveDto) {
-    const user = Leave.create(createLeaveDto);
-    await user.save();
-    return user;
+    Leave.create(createLeaveDto).save();
+    
   }
 
   async findAll() {

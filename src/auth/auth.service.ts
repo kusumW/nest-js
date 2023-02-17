@@ -56,6 +56,14 @@ export class AuthService {
     return user;
   }
 
+  async update(userId: number, imageUrl: string): Promise<void> {
+    try {
+      await User.update(userId, { profileImage: imageUrl });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // async forgotPassword(authLoginDto:AuthLoginDto): Promise<void> {
   //     // Step 1: Validate the email address
   //     const { email,password}=authLoginDto;

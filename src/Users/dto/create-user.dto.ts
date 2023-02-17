@@ -16,4 +16,8 @@ export class CreateUserDto {
   age: number;
 
   id: number;
+
+  profileImage:string;
+
+ 
 }

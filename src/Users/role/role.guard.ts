@@ -17,18 +17,18 @@ export class RoleGuard implements CanActivate {
       'role',
       context.getHandler(),
     );
-    console.log(reruiredRoles);
+   // console.log(reruiredRoles);
     if (!reruiredRoles) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    console.log(user);
+   // console.log(user);
     //  console.log(user.role);
     //  console.log(reruiredRoles);
     const userRoles = user.role.split(',');
-    console.log(userRoles);
+   // console.log(userRoles);
     //  if (user.role !== reruiredRoles) {
     //    throw new ForbiddenException('Access denied');
     //  }

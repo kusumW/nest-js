@@ -79,5 +79,9 @@ export class UserService {
     // return user;
     // user.otp=savedotp;
     // return User.save(Otp);
-  }
+ }
+
+ public async setAvatar(userId: number, avatarUrl: string){
+  User.update(userId, {profileImage: avatarUrl});
+}
 }

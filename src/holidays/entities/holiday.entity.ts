@@ -21,10 +21,7 @@ export class Holiday extends BaseEntity {
   title: string;
 
   @Column()
-  startDate: Date;
-
-  @Column()
-  endDate: Date;
+  date: Date;
 
   @Column({ default: Holidays.YES })
   isOptional: Holidays;
@@ -33,6 +30,6 @@ export class Holiday extends BaseEntity {
   status: Holidays;
 
   @Column()
-  @CreateDateColumn()
+  @CreateDateColumn({type: 'datetime'})
   createdAt: Date;
 }

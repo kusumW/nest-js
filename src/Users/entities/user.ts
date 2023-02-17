@@ -40,9 +40,14 @@ export class User extends BaseEntity {
   })
   role: string[];
 
+  @Column({ nullable: true })
+  profileImage?: string;
+
   @Column()
   @CreateDateColumn()
   createdAt: Date;
+
+
 
   // @OneToOne(() => Otp,{
   //   eager:true,

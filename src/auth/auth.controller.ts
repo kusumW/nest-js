@@ -4,7 +4,13 @@ import {
   Get,
   HttpException,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
+  Request,
+  Param,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { get } from 'http';
 import { AuthLoginDto } from './dto/auth-login.dto';
@@ -17,9 +23,18 @@ import { Roles } from 'src/Users/roles/roles.decorator';
 import Role from 'src/Users/enum/role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from 'src/Users/role/role.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { User } from 'src/Users/entities/user';
+import { UserService } from 'src/Users/user.service';
+import { of } from 'rxjs';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private userservice: UserService,
+  ) {}
 
   @Post('login')
   async login(@Body() authLoginDto: AuthLoginDto) {
@@ -31,19 +46,34 @@ export class AuthController {
     return await this.authService.create(authLoginDto);
   }
 
-  //   @Post('forgot-password')
-  // async forgotPassword(@Body() authLoginDto:AuthLoginDto): Promise<void> {
-  //   var isEmailSent= this.authService.forgotPassword(authLoginDto);
-  //   if(isEmailSent){
-  //     throw new HttpException("LOGIN.EMAIL_SENT", null);
-  //   } else {
-  //     throw new HttpException("REGISTRATION.ERROR.MAIL_NOT_SENT",null);
-  //   }
-  // }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async test() {
     return 'sucess login';
+  }
+
+  @Post(':userid/profile')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './profile',
+        filename: (req, file, cb) => {
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          return cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  uploadProfile(@Param('userid') userId, @UploadedFile() file) {
+    this.userservice.setAvatar(Number(userId), `${file.path}`);
+  }
+
+  @Get('avatars/:fileId')
+  async serveProfile(@Param('fileId') fileId, @Res() res): Promise<any> {
+    res.sendFile(fileId, { root: 'avatars' });
   }
 }

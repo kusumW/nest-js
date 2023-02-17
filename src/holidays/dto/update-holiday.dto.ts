@@ -7,9 +7,7 @@ export class UpdateHolidayDto extends PartialType(CreateHolidayDto) {
 
   title: string;
 
-  startDate: Date;
-
-  endDate: Date;
+  date: Date;
 
   isOptional: Holidays;
 
