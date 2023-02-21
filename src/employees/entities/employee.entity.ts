@@ -1,6 +1,6 @@
 import { Department } from 'src/department/entities/department.entity';
 import { Entity,BaseEntity,CreateDateColumn,Column, PrimaryGeneratedColumn, BeforeInsert, Repository, OneToOne, JoinColumn, ManyToOne} from 'typeorm';
-import Role from '../../Users/enum/role.enum';
+import employees from '../../employees/enum/employee.enum';
 // import {BaseEntity} from 'typeorm'
 
 
@@ -23,15 +23,18 @@ export class Employee extends BaseEntity {
   Age: number;
 
   @Column()
+  Birthdate:Date;
+
+  @Column()
   JoiningDate:Date;
   @Column()
   Department:string;
 
-  @Column({default:true})
-  Status:boolean
+  @Column({ default: employees.Enabled })
+  Status:string;
 
-  @Column({default:true})
-  Suspended:Boolean
+  @Column({ default: employees.NO })
+  Suspended:string;
 
   @Column()
   @CreateDateColumn()

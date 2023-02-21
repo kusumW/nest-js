@@ -3,6 +3,7 @@ enum Holidays {
   Disabled = 'disabled',
   YES = 'yes',
   NO = 'no',
+
 }
 
 export default Holidays;

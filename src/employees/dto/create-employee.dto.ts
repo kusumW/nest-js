@@ -1,5 +1,6 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import Role from '../../Users/enum/role.enum';
+import employees from '../enum/employee.enum';
 export class CreateEmployeeDto {
   id: number;
 
@@ -20,9 +21,11 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   JoiningDate: Date;
 
-
+  Status: employees;
 
   createdAt: Date;
 
-  Department:string;
+  Department: string;
+  
+  Birthdate: Date;
 }

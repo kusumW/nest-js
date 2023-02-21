@@ -30,6 +30,6 @@ export class Holiday extends BaseEntity {
   status: Holidays;
 
   @Column()
-  @CreateDateColumn({type: 'datetime'})
+  @CreateDateColumn()
   createdAt: Date;
 }

@@ -14,10 +14,6 @@ export class CreateUserDto {
   @IsInt()
   @IsNotEmpty()
   age: number;
-
   id: number;
-
-  profileImage:string;
-
- 
+  profileImage: string;
 }

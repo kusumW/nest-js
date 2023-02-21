@@ -37,7 +37,7 @@ export class Leave extends BaseEntity {
   @Column({ name: 'assigned work status' })
   assignedworkstatus: string;
 
-  @Column({ name: 'HR status' })
+  @Column({ name: 'HR status' ,default:'pending'})
   status: string;
 
   @Column({ name: 'action taken on' })

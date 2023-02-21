@@ -10,13 +10,9 @@ export class CreateHolidayDto {
   title: string;
 
   @IsNotEmpty()
- 
- @Type(() => Date)
- @TransformType(() => Date)
- date: Date;
+  date: Date;
 
   isOptional: Holidays;
 
   status: Holidays;
 }
-

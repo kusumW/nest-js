@@ -31,9 +31,9 @@ export class HolidaysController {
   @Roles(Role.Admin)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Get()
-  async findAll() :Promise<Holiday[]>{
-    const user= await this.holidaysService.findAll();
-    console.log(user.map(h => `${h.title} (${h.date.toLocaleString('en-US', { timeZone: 'UTC', year: 'numeric', month: '2-digit', day: '2-digit' })})`));
+  async findAll(): Promise<Holiday[]> {
+    const user = await this.holidaysService.findAll();
+
     return user;
   }
 
@@ -56,9 +56,5 @@ export class HolidaysController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.holidaysService.remove(+id);
-  }
-  @Get('upcoming')
-  async getUpcomingHolidays() {
-    return this.holidaysService.getUpcomingHolidays();
   }
 }

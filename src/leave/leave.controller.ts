@@ -25,13 +25,8 @@ export class LeaveController {
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Roles(Role.User)
   @Post()
-  create(@Body() createLeaveDto: CreateLeaveDto, @Res() res: Response) {
-    const user = this.leaveService.create(createLeaveDto);
-    if (user) {
-      return res.send({ user });
-    } else {
-      res.status(404).send({ msg: 'not able to create' });
-    }
+  async create(@Body() createLeaveDto: CreateLeaveDto) {
+    return this.leaveService.create(createLeaveDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RoleGuard)
