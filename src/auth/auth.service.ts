@@ -26,7 +26,7 @@ export class AuthService {
   async login(authLoginDto: AuthLoginDto) {
     const user = await this.validateUser(authLoginDto);
     const payload = {
-      userId: user.id,
+      user_id: user.id,
       role: user.role,
       name: user.name,
       email: user.email,
@@ -50,11 +50,21 @@ export class AuthService {
   async validateUser(authLoginDto: AuthLoginDto) {
     const { email, password } = authLoginDto;
     const user = await this.userservice.findByEmail(email);
-    if (!(await user?.validatePassword(password))) {
-      throw new UnauthorizedException();
+    console.log(user)
+    if (!user) {
+      throw new UnauthorizedException('Invalid email');
     }
+  
+    const isValidPassword = await user.validatePassword(password);
+    console.log(isValidPassword);
+    
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+  
     return user;
   }
+  
 
   async update(userId: number, imageUrl: string): Promise<void> {
     try {
@@ -63,39 +73,4 @@ export class AuthService {
       throw error;
     }
   }
-
-  // async forgotPassword(authLoginDto:AuthLoginDto): Promise<void> {
-  //     // Step 1: Validate the email address
-  //     const { email,password}=authLoginDto;
-  //     const user = await this.userservice.findByEmail(email);
-  //     if (!user) {
-  //       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-  //     }
-  //     else{
-
-  //     // Step 2: Generate a password reset token and send it to the user's email
-  //     // const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  //     // send email with resetToken
-  //     const otp = randomBytes(2).toString('hex');
-  //     console.log(otp);
-
-  //     const url = 'OTP='+otp;
-  //     const text = `Welcome to the application. To confirm the email address, click here: ${url}`;
-
-  //     // await this.userservice.update(user.id, {
-  //     //     resetToken,
-  //     //     email: user.email,
-  //     //     password: user.password,
-  //     //     id: user.id
-  //     // } );
-
-  //     return this.mailservice.sendMail({
-  //         to: email,
-  //         from:'kusum.wappnet@gmail.com',
-  //         subject: 'Email confirmation',
-  //         text,
-  //       })
-  //     }
-  // //     Step 3: Store the password reset token in the database
-  //   }
 }

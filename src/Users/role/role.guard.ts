@@ -33,14 +33,14 @@ export class RoleGuard implements CanActivate {
     //    throw new ForbiddenException('Access denied');
     //  }
 
-    reruiredRoles.some((role) => {
-      if (userRoles.includes(role)) {
-        return true;
-      } else {
-        throw new ForbiddenException('Access denied');
-      }
-    });
+    const hasRequiredRole = reruiredRoles.some((role) =>
+    userRoles.includes(role),
+  );
 
+  if (hasRequiredRole) {
     return true;
+  } else {
+    throw new ForbiddenException('Access denied');
+      }
   }
 }

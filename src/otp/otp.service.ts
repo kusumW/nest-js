@@ -13,7 +13,7 @@ export class OtpService {
     return user;
   }
 
-  async findOne(data: any) {
+  async findOne(data: object) {
     return Otp.findOne(data);
   }
 }

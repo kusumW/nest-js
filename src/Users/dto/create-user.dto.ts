@@ -1,8 +1,14 @@
-import { IsEmail, IsInt, IsNotEmpty, isNumber } from 'class-validator';
+import { IsEmail, IsInt, IsNotEmpty, IsNumber, isNumber, IsOptional, IsString } from 'class-validator';
 import Role from '../enum/role.enum';
 
 export class CreateUserDto {
-  role: string[];
+
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsNotEmpty()
+  role:Role;
 
   @IsNotEmpty()
   @IsEmail()
@@ -11,9 +17,26 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @IsInt()
+  @IsNumber()
   @IsNotEmpty()
   age: number;
-  id: number;
-  profileImage: string;
+
 }
+export class UpdateUserDto {
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+  
+  @IsOptional()
+  @IsNumber()
+  @IsNotEmpty()
+  age: number;
+
+}
+

@@ -7,6 +7,7 @@ import { RoleGuard } from 'src/Users/role/role.guard';
 @Module({
   imports:[EmployeesModule],
   controllers: [DepartmentController],
-  providers: [DepartmentService,RoleGuard]
+  providers: [DepartmentService,RoleGuard],
+  exports :[DepartmentService]
 })
 export class DepartmentModule {}

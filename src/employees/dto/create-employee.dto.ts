@@ -5,27 +5,31 @@ export class CreateEmployeeDto {
   id: number;
 
   @IsNotEmpty()
-  Name: string;
+  name: string;
 
   @IsNotEmpty()
   @IsEmail()
-  Email: string;
+  email: string;
 
   @IsNotEmpty()
   @IsEmail()
-  PersonalEmail: string;
+  personal_email: string;
 
   @IsNotEmpty()
-  Age: number;
+  age: number;
 
   @IsNotEmpty()
-  JoiningDate: Date;
+  joining_date: Date;
 
   Status: employees;
 
   createdAt: Date;
-
-  Department: string;
   
-  Birthdate: Date;
+  birth_date: Date;
+
+  @IsNotEmpty()
+  user_id:number;
+  
+  @IsNotEmpty()
+  department_id:number;
 }

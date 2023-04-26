@@ -4,5 +4,5 @@ export class CreateDepartmentDto {
   id: number;
 
   @IsNotEmpty()
-  Department: string;
+  department: string;
 }

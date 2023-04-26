@@ -8,6 +8,8 @@ import {
   Repository,
   OneToOne,
   JoinColumn,
+  OneToMany,
+  UpdateDateColumn,
 } from 'typeorm';
 // import {BaseEntity} from 'typeorm'
 import * as bcrypt from 'bcryptjs';
@@ -15,16 +17,17 @@ import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { Otp } from 'src/otp/entities/otp';
 import Role from '../enum/role.enum';
+import { Employee } from 'src/employees/entities/employee.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({type:'bigint'})
   id: number;
 
-  @Column()
+  @Column({length:70})
   name: string;
 
-  @Column()
+  @Column({length:40})
   email: string;
 
   @Column()
@@ -38,23 +41,21 @@ export class User extends BaseEntity {
     enum: Role,
     default: [Role.Admin],
   })
-  role: string[];
+  role: Role;
 
   @Column({ nullable: true })
   profileImage?: string;
 
   @Column()
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
+  @Column()
+  @UpdateDateColumn()
+  updated_at: Date;
 
-
-  // @OneToOne(() => Otp,{
-  //   eager:true,
-  //   cascade: true
-  // })
-  // @JoinColumn()
-  //   public otp: Otp
+  @OneToOne(() => Employee, (roles) => roles.user_id)
+  user_id: Employee[];
 
   @BeforeInsert()
   async hashPassword() {
@@ -63,4 +64,6 @@ export class User extends BaseEntity {
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);
   }
+  
+  
 }

@@ -9,37 +9,58 @@ import {
   Res,
   UseGuards,
   Req,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-
-import bcrypt from 'bcryptjs';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { UserOtpDto } from 'src/auth/dto/createUserOtp.dto';
 import { Roles } from './roles/roles.decorator';
 import Role from './enum/role.enum';
 import { RoleGuard } from './role/role.guard';
+import { Response } from 'express';
+import { Not } from 'typeorm';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Get()
-  @Roles(Role.Admin)
-  async findAll() {
-    return await this.userService.findAll();
-  }
-
-  @Get('get')
-  getUsers() {
-    return this.userService.findUsers();
+  // @Roles(Role.Admin,Role.HR)
+  @Post('create')
+  async create(@Body() CreateUserDto: CreateUserDto,@Res() res: Response) {
+    const user = await this.userService.create(CreateUserDto);
+    return res.status(HttpStatus.CREATED).json({
+      message: 'employee created',
+      data: user,
+    });
   }
 
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.Admin)
+  @Get()
+  @Roles(Role.HR,Role.Admin)
+  async findAll( @Res() res: Response) {
+    const user= await this.userService.findAll();
+    return res.status(HttpStatus.OK).json({
+      message: 'user list',
+      data: user,
+    });
+  }
+
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @Roles(Role.HR,Role.Admin)
   @Get('/:id')
-  async findOne(@Param('id') id: string) {
-    return this.userService.showById(+id);
+  async findOne(@Param('id') id: number, @Res() res: Response) {
+    const user = await this.userService.findById({ id });
+
+    if (!user) {
+      return res.status(HttpStatus.NOT_FOUND).json({
+        message: 'user not found',
+        data: {},
+      });
+    }
+    return res.status(HttpStatus.OK).json({
+      message: 'user list',
+      data: user,
+    });
   }
 
   @Get('/email')
@@ -47,28 +68,60 @@ export class UserController {
     return this.userService.findByEmail(email);
   }
 
+
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.Admin)
-  @Post('create')
-  async create(@Body() CreateUserDto: CreateUserDto) {
-    return this.userService.create(CreateUserDto);
-  }
-  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.HR,Role.Admin)
   @Put(':id')
-  async update(@Param('id') id: number, @Body() data: CreateUserDto) {
-    return this.userService.update(id, data);
+  async update(
+    @Param('id') id: number,
+    @Body() data: UpdateUserDto,
+    @Res() res: Response,
+  ) {
+    const user = await this.userService.findById({ id });
+
+    if (!user) {
+      return res.status(HttpStatus.NOT_FOUND).json({
+        message: 'user not found',
+        data: {},
+      });
+    }
+
+    const findemail = await this.userService.findBy({
+      where:
+        {  email:data.email,
+          id:Not(id)
+        }
+        
+      });
+
+    if (findemail) {
+      return res.status(HttpStatus.CONFLICT).json({
+        message: 'email already exist',
+        data: {},
+      });
+    }
+    const update= await this.userService.update(id, data);
+    return res.status(HttpStatus.OK).json({
+      message: 'user details updated',
+      data: update,
+    });
   }
 
   @UseGuards(AuthGuard('jwt'), RoleGuard)
-  @Roles(Role.Admin)
+  @Roles(Role.Admin,Role.HR)
   @Delete(':id')
-  async destroy(@Param('id') id: number) {
-    return this.userService.destroy(id);
-  }
-
-  @Post(':id/otp')
-  createUserOtp(@Param('id') id: number, @Body() userOtpDto: UserOtpDto) {
-    console.log('sdas');
-    return this.userService.createUserOtp(id, userOtpDto);
+  async destroy(@Param('id') id: number, @Res() res: Response) {
+    const user = await this.userService.findById({ id });
+    if (!user) {
+      return res.status(HttpStatus.NOT_FOUND).json({
+        message: 'user not found',
+        data: {},
+      });
+    }
+    await this.userService.destroy(id);
+    return res.status(HttpStatus.OK).json({
+      message: 'user deleted',
+      data: user,
+    });
   }
 }

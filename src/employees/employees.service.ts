@@ -7,7 +7,7 @@ import { Employee } from './entities/employee.entity';
 @Injectable()
 export class EmployeesService {
   async create(createEmployeeDto: CreateEmployeeDto) {
-    if (await Employee.findOne({ Email: createEmployeeDto.Email })) {
+    if (await Employee.findOne({ email: createEmployeeDto.email })) {
       throw new ConflictException('User already exist');
     }
     const user = Employee.create(createEmployeeDto);
@@ -19,6 +19,9 @@ export class EmployeesService {
   }
   async findOne(id: number) {
     return await Employee.findOne(+id);
+  }
+  async find(query: object) {
+    return await Employee.findOne(query);
   }
 
 

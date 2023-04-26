@@ -26,6 +26,7 @@ import { MulterModule } from '@nestjs/platform-express/multer';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { Seeder } from 'typeorm-seeding';
 
 
 const entities=[User,Otp,Employee,Department,Leave,Holiday];
@@ -36,19 +37,21 @@ const entities=[User,Otp,Employee,Department,Leave,Holiday];
     rootPath: join(__dirname, '..', 'files')
   }),ConfigModule.forRoot(),MailerModule.forRoot({
     transport:{
-      host:process.env.Host,
+      host:'',
       auth:{
-        user:process.env.USER,
-        pass:process.env.PASS
+        user:'',
+        pass:''
       }
     }
-  }),TypeOrmModule.forRoot({
+  }),
+  
+  TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
     port: 3306,
     username: 'root',
     password: 'password',
-    database: 'nestjs_mysql_crud_app',
+    database: 'HRMS_DB',
     entities: entities,
     synchronize: true,
   }), UserModule, AuthModule, OtpModule, EmployeesModule, DepartmentModule, HolidaysModule, LeaveModule, DashboardModule],

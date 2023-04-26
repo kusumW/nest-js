@@ -11,6 +11,7 @@ import {
   Param,
   Res,
   Req,
+  HttpStatus,
 } from '@nestjs/common';
 import { get } from 'http';
 import { AuthLoginDto } from './dto/auth-login.dto';
@@ -29,6 +30,7 @@ import { UserService } from 'src/Users/user.service';
 import { of } from 'rxjs';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { Response } from 'express';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -68,10 +70,35 @@ export class AuthController {
       }),
     }),
   )
-  uploadProfile(@Param('userid') userId, @UploadedFile() file) {
-    this.userservice.setAvatar(Number(userId), `${file.path}`);
+  async uploadProfile(@Param('userid') userId: string,@Res() res: Response, @UploadedFile() file: any) {
+    try {
+      const user = await this.userservice.findById({where:{id:Number(userId)}});
+      if (!user) {
+        return res.status(HttpStatus.NOT_FOUND).json({
+          message: 'User not found',
+          data: null,
+        });
+      }
+      if (!file) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          message: 'No file uploaded',
+          data: null,
+        });
+      }
+      await this.userservice.setAvatar(Number(userId), `${file.path}`);
+      return res.status(HttpStatus.OK).json({
+        message: 'File uploaded successfully',
+        data: { fileUrl: `${file.path}` },
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: 'Failed to upload file',
+        data: null,
+      });
+    }
   }
-
+  
   @Get('avatars/:fileId')
   async serveProfile(@Param('fileId') fileId, @Res() res): Promise<any> {
     res.sendFile(fileId, { root: 'avatars' });

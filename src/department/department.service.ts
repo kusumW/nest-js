@@ -20,6 +20,9 @@ export class DepartmentService {
     return await Department.findOne(+id);
   }
 
+  async find(query: object) {
+    return await Department.findOne(query);
+  } 
   async update(id: number, updateDepartmentDto: UpdateDepartmentDto) {
     await Department.update({ id }, updateDepartmentDto);
     return await Department.findOne({ id });

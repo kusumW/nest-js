@@ -20,7 +20,7 @@ import { UpdateDashboardDto } from './dto/update-dashboard.dto';
 @Controller('dashboard')
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
-  @Roles(Role.Admin)
+  @Roles(Role.Admin,Role.HR,Role.Employee,Role.Manager)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Get('upcoming/holiday')
   async getUpcomingHolidays() {
@@ -28,15 +28,23 @@ export class DashboardController {
     return { 'upcoming holiday in week': user };
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin,Role.HR,Role.Employee,Role.Manager)
+  @UseGuards(AuthGuard('jwt'), RoleGuard)
+  @Get('upcoming/holiday/in-year')
+  async getUpcomingHoliday() {
+    const user = await this.dashboardService.getUpcomingHoliday();
+    return { 'upcoming holiday in year': user };
+  }
+
+  @Roles(Role.Admin, Role.HR)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Get('upcoming/birthday')
   async getUpcomingBirthdays() {
     const user = await this.dashboardService.getUpcomingBirthdays();
-    return { 'upcoming birthday in week': user };
+    return { 'upcoming birthday in month': user };
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin,Role.HR,Role.Employee,Role.Manager)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Get('today/leaves')
   async TodaysLeave() {
@@ -44,10 +52,11 @@ export class DashboardController {
     return { "Today's leave": user };
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin,Role.HR,Role.Manager)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Get('pending-leaves')
   async getAllPendingLeaves() {
-    return this.dashboardService.getPendingLeaves();
+    const user = await this.dashboardService.getPendingLeaves();
+     return { "Pending leaves": user };
   }
 }

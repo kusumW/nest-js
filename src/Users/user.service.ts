@@ -5,7 +5,7 @@ import {
   BeforeInsert,
   Repository,
 } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/create-user.dto';
 import {
   ConflictException,
   HttpException,
@@ -23,9 +23,9 @@ import { Otp } from 'src/otp/entities/otp';
 export class UserService {
   constructor() {}
 
-  findUsers() {
-    return User.find({ relations: ['otp'] });
-  }
+  // findUsers() {
+  //   return User.find({ relations: ['otp'] });
+  // }
   async create(CreateUserDto: CreateUserDto) {
     if (await User.findOne({ email: CreateUserDto.email })) {
       throw new ConflictException('User already exist');
@@ -36,27 +36,38 @@ export class UserService {
     return user;
   }
   async showById(id: number): Promise<User> {
-    const user = await this.findById(id);
+    const user = await this.findById({id});
     delete user.password;
     return user;
   }
   async findAll() {
     return await User.find();
   }
-  async findById(id: number) {
-    return await User.findOne(id);
+  async findById(query:object) {
+    return await User.findOne(query);
   }
 
   async findByEmail(email: any) {
     return await User.findOne({ where: { email: email } });
   }
+  
+  async findBy(query: object) {
+    return await User.findOne(query);
+  }
+  
 
   //   async delete(id: number) {
   //     return await User.destroy({where:{id}});
   // }
-  async update(id: number, data: CreateUserDto) {
+  async update(id: number, data: UpdateUserDto) {
     // const hashedPassword = await bcrypt.hash(data.password, 10);
     await User.update({ id }, data);
+    return await User.findOne({ id });
+  }
+
+  async updatePassowrd(id: number, query: object) {
+    // const hashedPassword = await bcrypt.hash(data.password, 10);
+    await User.update({ id }, query);
     return await User.findOne({ id });
   }
 

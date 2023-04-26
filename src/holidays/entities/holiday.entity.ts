@@ -4,32 +4,34 @@ import {
   CreateDateColumn,
   Column,
   PrimaryGeneratedColumn,
-  BeforeInsert,
-  Repository,
-  OneToOne,
-  JoinColumn,
-  ManyToOne,
+  UpdateDateColumn,
 } from 'typeorm';
 import Holidays from '../enum/holiday.enum';
 
 @Entity('holiday')
 export class Holiday extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({type:"bigint"})
   id: number;
 
-  @Column()
+  @Column({length:70})
   title: string;
 
   @Column()
   date: Date;
 
-  @Column({ default: Holidays.YES })
+  @Column({ default: Holidays.YES,type: 'enum',
+  enum: Holidays, })
   isOptional: Holidays;
 
-  @Column({ default: Holidays.Enabled })
+  @Column({ default: Holidays.Enabled,type: 'enum',
+  enum: Holidays, })
   status: Holidays;
-
+  
   @Column()
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
+
+  @Column()
+  @UpdateDateColumn()
+  updated_at: Date;
 }

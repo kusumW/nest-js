@@ -1,6 +1,8 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
+import { BaseEntity } from 'typeorm';
+import { Status } from '../entities/leave.entity';
 
-export class CreateLeaveDto {
+export class CreateLeaveDto extends BaseEntity{
   @IsNotEmpty()
   subject: string;
 
@@ -11,14 +13,24 @@ export class CreateLeaveDto {
   description: string;
 
   @IsNotEmpty()
-  startDate: Date;
+  start_date: Date;
 
   @IsNotEmpty()
-  endDate: Date;
+  end_date: Date;
 
   @IsNotEmpty()
-  leavereason: string;
+  reason: string;
 
   @IsNotEmpty()
   assignedworkstatus: string;
+ 
+  @IsNotEmpty()
+  employee_id: number;
+}
+
+export class UpdateLeaveDto extends BaseEntity{
+  actiontakenon: string;
+  
+  @IsOptional()
+  status: Status
 }

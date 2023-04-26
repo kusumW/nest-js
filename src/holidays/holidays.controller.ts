@@ -7,8 +7,11 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { HolidaysService } from './holidays.service';
+import { Response } from 'express';
 import { CreateHolidayDto } from './dto/create-holiday.dto';
 import { UpdateHolidayDto } from './dto/update-holiday.dto';
 import { Roles } from 'src/Users/roles/roles.decorator';
@@ -21,40 +24,78 @@ import { Holiday } from './entities/holiday.entity';
 export class HolidaysController {
   constructor(private readonly holidaysService: HolidaysService) {}
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin,Role.HR)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Post()
-  create(@Body() createHolidayDto: CreateHolidayDto) {
-    return this.holidaysService.create(createHolidayDto);
+  async create(@Body() createHolidayDto: CreateHolidayDto,@Res() res: Response) {
+    const holiday= await this.holidaysService.create(createHolidayDto);
+    return res.status(HttpStatus.CREATED).json({
+      message: 'Holiday added',
+      data: holiday,
+    });
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin,Role.HR)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Get()
-  async findAll(): Promise<Holiday[]> {
-    const user = await this.holidaysService.findAll();
-
-    return user;
+  async findAll(@Res() res: Response){
+    const holiday = await this.holidaysService.findAll();
+    return res.status(HttpStatus.OK).json({
+      message: 'holiday list',
+      data: holiday,
+    });
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin,Role.HR)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.holidaysService.findOne(+id);
+  async findOne(@Param('id') id: string,@Res() res: Response) {
+    const holiday = await this.holidaysService.findOne(+id);
+    if (!holiday) {
+      return res.status(HttpStatus.NOT_FOUND).json({
+        message: 'holiday not found',
+        data: {},
+      });
   }
-
-  @Roles(Role.Admin)
+  return res.status(HttpStatus.OK).json({
+    message: 'holiday list',
+    data: holiday,
+  });
+  }
+  @Roles(Role.Admin,Role.HR)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHolidayDto: UpdateHolidayDto) {
-    return this.holidaysService.update(+id, updateHolidayDto);
+  async update(@Param('id') id: string, @Body() updateHolidayDto: UpdateHolidayDto,@Res() res: Response) {
+    const holiday = await this.holidaysService.findOne(+id);
+    if (!holiday) {
+      return res.status(HttpStatus.NOT_FOUND).json({
+        message: 'holiday not found',
+        data: {},
+      });
+    }
+    const updateHoliday= await this.holidaysService.update(+id, updateHolidayDto);
+    return res.status(HttpStatus.OK).json({
+      message: 'holiday details updated',
+      data: updateHoliday,
+    });
+  
   }
 
-  @Roles(Role.Admin)
+  @Roles(Role.Admin,Role.HR)
   @UseGuards(AuthGuard('jwt'), RoleGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.holidaysService.remove(+id);
+  async remove(@Param('id') id: string,@Res() res: Response) {
+    const holiday = await this.holidaysService.findOne(+id);
+    if (!holiday) {
+      return res.status(HttpStatus.NOT_FOUND).json({
+        message: 'holiday not found',
+        data: {},
+      });
+    }
+    const deleteHoliday = await this.holidaysService.remove(+id);
+    return res.status(HttpStatus.OK).json({
+      message: 'holiday deleted',
+      data: deleteHoliday,
+    });
   }
 }
